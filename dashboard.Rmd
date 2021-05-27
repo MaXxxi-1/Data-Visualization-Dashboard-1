@@ -5,29 +5,56 @@ output:
     orientation: columns
     vertical_layout: fill
     theme: spacelab
+vertical_layout: scroll
 runtime: shiny
 ---
 
 ```{r setup, include=FALSE}
 library(flexdashboard)
 library(dplyr)
+library(ggplot2)
+library(miniUI)
+library(DT)
+#library(tidyverse)
 countries_by_fuel = read.csv("E:\\co2-emissions-by-fuel-line.csv", header=TRUE)
 ```
 
-Global CO2 Emission
+CO2 Emission By Fossil Fuels{data-orientation=columns}
 ===================================
 
-### Frame 1 {data-commentary-width=400}
+row {data-width=350}
+---------------------------------
+### Fossil Fuel CO2 Emission {data-height=600}
 
-```{r}
+```{r, echo=FALSE}
 coutries = countries_by_fuel %>% distinct(Entity) %>% pull()
-
 selectInput("country_choice", label = h3("Select Country"),
             choices = coutries, selected = "Afghanistan")
 
-renderPrint({ 
-  input$country_choice
-})
+miniContentPanel(
+  renderPlot({
+    input_df = countries_by_fuel %>% filter(Entity == input$country_choice)
+    inputCountry <- paste(input$country_choice)
+    ggplot(input_df, aes(x=Year))+
+      geom_line(aes(y = CO2.emissions.from.oil, color="Oil"), size=1.5)+
+      geom_line(aes(y = CO2.emissions.from.flaring, color="Flaring"), size=1.5)+
+      geom_line(aes(y = CO2.emissions.from.cement, color="Cement"), size=1.5)+
+      geom_line(aes(y = CO2.emissions.from.coal, color="Coal"), size=1.5)+
+      geom_line(aes(y = CO2.emissions.from.gas, color="Gas"), size=1.5)+
+      geom_line(aes(y = CO2.emissions.from.other.industry, color="Other Industry"), size=1.5)+
+  scale_color_manual(values = c("darkred", "steelblue", "green", "darkorange", "#0036CC", "yellow"))+ ggtitle(paste(inputCountry), "CO2 Emissions By fossil Fuels, Yearly") +
+  labs(x="Year", y="CO2 Emissions from Fossil Fuels\n(metric tonnes per year)")+ theme(axis.title.y = element_text(size=14, family="Trebuchet MS", color="#666666")) +
+  theme(plot.title = element_text(size=26, family="Trebuchet MS", face="bold", hjust=0, color="#666666")) +
+  theme(axis.text = element_text(size=16, family="Trebuchet MS"))
+  }),
+  
+
+renderDT({
+      input_df = countries_by_fuel %>% filter(Entity == input$country_choice)
+  datatable(head(input_df, 10), extensions = c('Responsive'), 
+            options = list(responsive = TRUE))
+}),scrollable = TRUE)
+
 ```
 
 Per Capital CO2 Emissions {data-orientation=columns}
@@ -36,8 +63,7 @@ Per Capital CO2 Emissions {data-orientation=columns}
 Row {data-height=650}
 ---------------------------------
 
-### Overall Situation Since Start
-
+### Overall Situation Since 
 ```{r}
 ```
 Row {data-height=350}
@@ -48,7 +74,7 @@ Row {data-height=350}
 ```{r}
 ```
 
-CO2 Emissions by fossil fuels
+Global CO2 Emissions
 ====================================
 
 ```{r}
@@ -58,11 +84,13 @@ About US and Data{data-orientation=rows}
 ====================================
 
 ### About Us {data-height=300}
+
 #### Team:
 * Abhinav Tripathi 19BCE0548
+
 <br>
 <br>
-<br> 
+
 #### About Data: 
   > CO2 Emission Data from Kaggle. 
   
