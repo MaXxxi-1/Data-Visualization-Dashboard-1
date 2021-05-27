@@ -1,0 +1,75 @@
+---
+title: "CO2 Emission Dashboard"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+    theme: spacelab
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(dplyr)
+countries_by_fuel = read.csv("E:\\co2-emissions-by-fuel-line.csv", header=TRUE)
+```
+
+Global CO2 Emission
+===================================
+
+### Frame 1 {data-commentary-width=400}
+
+```{r}
+coutries = countries_by_fuel %>% distinct(Entity) %>% pull()
+
+selectInput("country_choice", label = h3("Select Country"),
+            choices = coutries, selected = "Afghanistan")
+
+renderPrint({ 
+  input$country_choice
+})
+```
+
+Per Capital CO2 Emissions {data-orientation=columns}
+===================================
+
+Row {data-height=650}
+---------------------------------
+
+### Overall Situation Since Start
+
+```{r}
+```
+Row {data-height=350}
+---------------------------------
+
+### New situations
+
+```{r}
+```
+
+CO2 Emissions by fossil fuels
+====================================
+
+```{r}
+```
+
+About US and Data{data-orientation=rows}
+====================================
+
+### About Us {data-height=300}
+#### Team:
+* Abhinav Tripathi 19BCE0548
+<br>
+<br>
+<br> 
+#### About Data: 
+  > CO2 Emission Data from Kaggle. 
+  
+  In this project we are using  CO2 and Greenhouse Emission data, which is downloaded from     kaggle.
+  This dataset contains 55 columns and 20,000+ rows.
+  This dataset contains year wise data of all the countries of the world. This dataset         includes wide range of information regarding CO2 emission (i.e. Growth rate, countries GDP,    CO2 emission per capita, etc.)
+
+```{r}
+```
+
