@@ -17,19 +17,25 @@ library(miniUI)
 library(DT)
 #library(tidyverse)
 countries_by_fuel = read.csv("E:\\co2-emissions-by-fuel-line.csv", header=TRUE)
+countries_annual_co2_emission = read.csv("E:\\annual-co2-emissions-per-country.csv", header=TRUE)
 ```
 
 CO2 Emission By Fossil Fuels{data-orientation=columns}
 ===================================
 
+Column{.sidebar data-width=200}
+-----------------------------------
+```{r}
+distinct_coutries_fuel = countries_by_fuel %>% distinct(Entity) %>% pull()
+selectInput("country_choice", label = h4("Select Country"),
+            choices = distinct_coutries_fuel, selected = "Afghanistan")
+```
+
 row {data-width=350}
 ---------------------------------
-### Fossil Fuel CO2 Emission {data-height=600}
+### Fossil Fuel CO2 Emissions{data-height=600}   
 
 ```{r, echo=FALSE}
-coutries = countries_by_fuel %>% distinct(Entity) %>% pull()
-selectInput("country_choice", label = h3("Select Country"),
-            choices = coutries, selected = "Afghanistan")
 
 miniContentPanel(
   renderPlot({
@@ -42,16 +48,17 @@ miniContentPanel(
       geom_line(aes(y = CO2.emissions.from.coal, color="Coal"), size=1.5)+
       geom_line(aes(y = CO2.emissions.from.gas, color="Gas"), size=1.5)+
       geom_line(aes(y = CO2.emissions.from.other.industry, color="Other Industry"), size=1.5)+
-  scale_color_manual(values = c("darkred", "steelblue", "green", "darkorange", "#0036CC", "yellow"))+ ggtitle(paste(inputCountry), "CO2 Emissions By fossil Fuels, Yearly") +
-  labs(x="Year", y="CO2 Emissions from Fossil Fuels\n(metric tonnes per year)")+ theme(axis.title.y = element_text(size=14, family="Trebuchet MS", color="#666666")) +
-  theme(plot.title = element_text(size=26, family="Trebuchet MS", face="bold", hjust=0, color="#666666")) +
-  theme(axis.text = element_text(size=16, family="Trebuchet MS"))
+      scale_color_manual(values = c("darkred", "steelblue", "green", "darkorange", "#0036CC", "yellow"))+                          ggtitle(paste(inputCountry), "CO2 Emissions By fossil Fuels, Yearly") +
+      labs(x="Year", y="CO2 Emissions from Fossil Fuels\n(metric tonnes per year)")+ 
+      theme(axis.title.y = element_text(size=14, family="Trebuchet MS", color="#666666")) +
+      theme(plot.title = element_text(size=26, family="Trebuchet MS", face="bold", hjust=0, color="#666666")) +
+      theme(axis.text = element_text(size=16, family="Trebuchet MS"))
   }),
   
 
 renderDT({
       input_df = countries_by_fuel %>% filter(Entity == input$country_choice)
-  datatable(head(input_df, 10), extensions = c('Responsive'), 
+      datatable(input_df, extensions = c('Responsive'), 
             options = list(responsive = TRUE))
 }),scrollable = TRUE)
 
@@ -77,9 +84,72 @@ Row {data-height=350}
 Global CO2 Emissions
 ====================================
 
+Column{.sidebar data-width=200}
+-----------------------------------
+
 ```{r}
+distinct_coutries_annual_co2 = countries_annual_co2_emission %>% distinct(Entity) %>% pull()
+selectInput("annual_country_choice", label = h4("Select Country"),
+            choices = distinct_coutries_annual_co2, selected = "Afghanistan")
+
+# observe({
+#   annual_input_df = countries_annual_co2_emission %>% filter(Entity == input$annual_country_choice)
+#   minValue = min(annual_input_df$Year)
+#   maxValue = max(annual_input_df$Year)
+#   stepValue = max(annual_input_df$Year) - min(annual_input_df$Year)
+  
+renderUI ({ 
+  annual_input_df = countries_annual_co2_emission %>% filter(Entity == input$annual_country_choice)
+    sliderValue = as.vector(annual_input_df$Year)
+    print(as.numeric(max(annual_input_df$Year)) - as.numeric(min(annual_input_df$Year)))
+            sliderInput("yearrange", label = "Year", 
+            min = min(as.numeric(annual_input_df$Year)), 
+            max = max(as.numeric(annual_input_df$Year)), 
+            value = 100,
+            animate = TRUE
+            )})
 ```
 
+Column{data-width=400}
+-----------------------------------
+### Chart A
+
+```{r}
+miniContentPanel(
+  
+  renderPlot({
+      annual_input_df = countries_annual_co2_emission %>% filter(Entity == input$annual_country_choice)
+      annual_input_df = annual_input_df %>% filter(Year <= input$yearrange)
+      ggplot(data = annual_input_df, aes(x = Year, y = Annual.CO2.emissions))+
+      geom_line(color = "#0099f9", size = 1) + geom_point(color = "#0099f9", size = 3)
+  }),
+  renderDT({
+      annual_input_df = countries_annual_co2_emission %>% filter(Entity == input$annual_country_choice)
+      annual_input_df = annual_input_df %>% filter(Year <= input$yearrange)
+      datatable(annual_input_df, extensions = c('Responsive'), 
+            options = list(responsive = TRUE))
+}),scrollable = TRUE)
+
+```
+
+Column{data-width=400}
+-----------------------------------
+### Chart B
+
+```{r}
+renderPlot({
+      annual_input_df = countries_annual_co2_emission %>% filter(Entity == input$annual_country_choice)
+      annual_input_df = annual_input_df %>% filter(Year <= input$yearrange)
+      ggplot(data = annual_input_df, aes(x = Year, y = Annual.CO2.emissions))+
+          geom_bar(stat="identity", fill="white", color="blue")+
+          theme_minimal()
+})
+```
+
+### Chart C
+
+```{r}
+```
 About US and Data{data-orientation=rows}
 ====================================
 
