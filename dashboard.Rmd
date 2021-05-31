@@ -18,6 +18,14 @@ library(DT)
 #library(tidyverse)
 countries_by_fuel = read.csv("E:\\co2-emissions-by-fuel-line.csv", header=TRUE)
 countries_annual_co2_emission = read.csv("E:\\annual-co2-emissions-per-country.csv", header=TRUE)
+countries_year_wise_co2_change = read.csv("E:\\absolute-change-co2.csv", header=TRUE)
+total_ghg_emissions = read.csv("E:\\total-ghg-emissions.csv", header=TRUE)
+percapita_ghg_emissions = read.csv("E:\\per-capita-ghg-emissions.csv", header=TRUE)
+methane_emissions = read.csv("E:\\methane-emissions.csv", header=TRUE)
+nitrous_oxide_emissions = read.csv("E:\\nitrous-oxide-emissions.csv", header=TRUE)
+global_co2_concentration = read.csv("E:\\global-co-concentration-ppm.csv", header=TRUE)
+global_methane_concentration = read.csv("E:\\ch4-concentration.csv", header=TRUE)
+global_nitrous_oxide_concentration = read.csv("E:\\n2o-concentration.csv", header=TRUE)
 ```
 
 CO2 Emission By Fossil Fuels{data-orientation=columns}
@@ -101,7 +109,6 @@ selectInput("annual_country_choice", label = h4("Select Country"),
 renderUI ({ 
   annual_input_df = countries_annual_co2_emission %>% filter(Entity == input$annual_country_choice)
     sliderValue = as.vector(annual_input_df$Year)
-    print(as.numeric(max(annual_input_df$Year)) - as.numeric(min(annual_input_df$Year)))
             sliderInput("yearrange", label = "Year", 
             min = min(as.numeric(annual_input_df$Year)), 
             max = max(as.numeric(annual_input_df$Year)), 
@@ -149,7 +156,153 @@ renderPlot({
 ### Chart C
 
 ```{r}
+renderPlot({
+      country_annual_change_year_wise = countries_year_wise_co2_change %>% filter(Entity == input$annual_country_choice)
+      country_annual_change_year_wise = country_annual_change_year_wise = country_annual_change_year_wise %>% filter(Year <= input$yearrange)
+      ggplot(data = country_annual_change_year_wise, aes(x = Year, y = Annual.co2.growth.absolute))+
+      geom_line(color = "#0099f9", size = 1) + geom_point(color = "#0099f9", size = 3)
+})
+
 ```
+
+
+GHG Emission
+===================================
+
+Column{.sidebar data-width=200}
+-----------------------------------
+
+```{r}
+distincy_countries_total_ghg_emissions = total_ghg_emissions %>% distinct(Entity) %>% pull()
+selectInput("total_gfg_country_choice", label = h4("Select Country"),
+            choices = distincy_countries_total_ghg_emissions, selected = "Afghanistan")
+  
+renderUI ({ 
+  total_ghg_input_df = total_ghg_emissions %>% filter(Entity == input$total_gfg_country_choice)
+    sliderValue = as.vector(total_ghg_input_df$Year)
+            sliderInput("ghgyearrange", label = "Year", 
+            min = min(as.numeric(total_ghg_input_df$Year)), 
+            max = max(as.numeric(total_ghg_input_df$Year)), 
+            value = 100,
+            animate = TRUE
+            )})
+```
+
+
+Column{data-width=500}
+-----------------------------------
+
+### Country Wise GHG Emission
+
+```{r}
+renderPlot({
+      country_ghg_change_year_wise = total_ghg_emissions %>% filter(Entity == input$total_gfg_country_choice)
+      country_ghg_change_year_wise = country_ghg_change_year_wise = country_ghg_change_year_wise %>% filter(Year <= input$ghgyearrange)
+      ggplot(data = country_ghg_change_year_wise, aes(x = Year, y = Total.GHG.emissions.including.LUCF))+
+      geom_line(color = "#0099f9", size = 1) + geom_point(color = "#0099f9", size = 3)
+})
+```
+
+Column{data-width=300}
+-----------------------------------
+
+### Per Capita GHG Emission
+```{r}
+renderPlot({
+      country_percapita_ghg_change_year_wise = percapita_ghg_emissions %>% filter(Entity == input$total_gfg_country_choice)
+      country_percapita_ghg_change_year_wise = country_percapita_ghg_change_year_wise = country_percapita_ghg_change_year_wise %>% filter(Year <= input$ghgyearrange)
+      ggplot(data = country_percapita_ghg_change_year_wise, aes(x = Year, y = Total.including.LUCF.percapita))+
+      geom_line(color = "#0099f9", size = 1) + geom_point(color = "#0099f9", size = 3)
+})
+```
+
+### Methane Emission
+```{r}
+renderPlot({
+      methane_change_year_wise = methane_emissions %>% filter(Entity == input$total_gfg_country_choice)
+      methane_change_year_wise = methane_change_year_wise = methane_change_year_wise %>% filter(Year <= input$ghgyearrange)
+      ggplot(data = methane_change_year_wise, aes(x = Year, y = Total.including.LUCF.CH4.emissions))+
+      geom_line(color = "#0099f9", size = 1) + geom_point(color = "#0099f9", size = 3)
+})
+```
+
+### Nitrous Oxide Emission
+
+```{r}
+renderPlot({
+      nitrous_oxide_change_year_wise = nitrous_oxide_emissions %>% filter(Entity == input$total_gfg_country_choice)
+      nitrous_oxide_change_year_wise = nitrous_oxide_change_year_wise = nitrous_oxide_change_year_wise %>% filter(Year <= input$ghgyearrange)
+      ggplot(data = nitrous_oxide_change_year_wise, aes(x = Year, y =Total.including.LUCF.N2O.emissions))+
+      geom_line(color = "#0099f9", size = 1) + geom_point(color = "#0099f9", size = 3)
+})
+```
+
+Atmospheric Concentration
+===================================
+
+Column{.sidebar data-width=200}
+-----------------------------------
+
+```{r}
+renderUI ({ 
+    sliderValue = as.vector(global_co2_concentration$Year)
+            sliderInput("concentrationyearrange", label = "Global CO2 Year Input", 
+            min = min(as.numeric(global_co2_concentration$Year)), 
+            max = max(as.numeric(global_co2_concentration$Year)), 
+            value = 1,
+            animate = TRUE
+            )
+})
+
+renderUI({
+      sliderValue = as.vector(global_methane_concentration$Year)
+            sliderInput("othergasesyearrange", label = "Global Methane/Nitrous Oxide Year Input", 
+            min = min(as.numeric(global_methane_concentration$Year)), 
+            max = max(as.numeric(global_methane_concentration$Year)), 
+            value = 1750,
+            animate = TRUE
+            )
+})
+```
+
+
+Column{data-width=500}
+-----------------------------------
+
+### Global CO2 Concentration
+
+```{r}
+renderPlot({
+      global_co2_concentration = global_co2_concentration %>% filter(Year <= input$concentrationyearrange)
+      ggplot(data = global_co2_concentration, aes(x = Year, y =CO2.concentrations.world))+
+      geom_line(color = "#0099f9", size = 1) + geom_point(color = "#0099f9", size = 3)
+})
+```
+
+Column{data-width=300}
+-----------------------------------
+
+### Methane Concentration
+```{r}
+renderPlot({
+      global_methane_concentration = global_methane_concentration %>% filter(Year <= input$othergasesyearrange)
+      ggplot(data = global_methane_concentration, aes(x = Year, y =CH4.concentration.world))+
+      geom_line(color = "#0099f9", size = 1) + geom_point(color = "#0099f9", size = 3)
+})
+```
+
+### Nitrous Oxide Concentration
+```{r}
+renderPlot({
+      global_nitrous_oxide_concentration = global_nitrous_oxide_concentration %>% filter(Year <= input$othergasesyearrange)
+      ggplot(data = global_nitrous_oxide_concentration, aes(x = Year, y =N2O.concentrations.world))+
+      geom_line(color = "#0099f9", size = 1) + geom_point(color = "#0099f9", size = 3)
+})
+```
+
+
+
+
 About US and Data{data-orientation=rows}
 ====================================
 
@@ -164,7 +317,7 @@ About US and Data{data-orientation=rows}
 #### About Data: 
   > CO2 Emission Data from Kaggle. 
   
-  In this project we are using  CO2 and Greenhouse Emission data, which is downloaded from     kaggle.
+  In this project we are using  CO2 and Greenhouse Emission data, which is downloaded from kaggle and ourworldindata.org.
   This dataset contains 55 columns and 20,000+ rows.
   This dataset contains year wise data of all the countries of the world. This dataset         includes wide range of information regarding CO2 emission (i.e. Growth rate, countries GDP,    CO2 emission per capita, etc.)
 
