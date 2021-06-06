@@ -79,23 +79,6 @@ renderDT({
 
 ```
 
-Per Capital CO2 Emissions {data-orientation=columns}
-===================================
-
-Row {data-height=650}
----------------------------------
-
-### <strong>Overall Situation Since</strong> 
-```{r}
-```
-Row {data-height=350}
----------------------------------
-
-### <strong>New situations</strong>
-
-```{r}
-```
-
 Global CO2 Emissions
 ====================================
 
@@ -326,7 +309,9 @@ About Us{data-orientation=rows}
 <div style="width:80%;margin:auto;">
 <h3 style="text-align: center;">CO2 Emission Dashboard</h3>
 #### About Project
-Our Project
+Across this project we have used different visualization methods to create a dashboard, which can help people visualise the increasing trend of CO2 and other greenhouse gases around the world.
+This project also focuses on helping people visualise the trend across specific countries. 
+The dataset used in this project is extremely detailed and contains a lot of information which has been edited and sorted to make this entire visualization project possible. The aforementioned dataset contains over 20,000 rows and 50+ columns. It has detailed information of all the countries of the world with a wide range of information regarding CO2 and Greenhouse gases emissions(such as growth rate, countries’ GDP, per capita emissions, etc.).
 
 #### About Data: 
   > CO2 Emission Data from Kaggle. 
