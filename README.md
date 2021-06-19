@@ -32,6 +32,21 @@ git clone https://github.com/Pro-Abhinav/Data-Visualization-Dashboard.git
 <img src="https://github.com/Pro-Abhinav/Data-Visualization-Dashboard/blob/master/public/images/img2.PNG" data-canonical-src="https://github.com/Pro-Abhinav/Data-Visualization-Dashboard/blob/master/public/images/img2.PNG" width="900" height="400"" alt="Page 2" />
 </p>
 
+3. This page consists of different graphs showing Country Wise GHG emission, Per Capita GHG Emission, Annual Methane Emission and Annual Nitrous Oxide Emissions.
+<p align="center"> 
+<img src="https://github.com/Pro-Abhinav/Data-Visualization-Dashboard/blob/master/public/images/img3.PNG" data-canonical-src="https://github.com/Pro-Abhinav/Data-Visualization-Dashboard/blob/master/public/images/img3.PNG" width="900" height="400"" alt="Page 3" />
+</p>
+
+4. Below page of the dashboard shows the global CO2 concentration and Global Concentration of other GFGs. i.e. Methane and Nitrous Oxide.
+<p align="center"> 
+<img src="https://github.com/Pro-Abhinav/Data-Visualization-Dashboard/blob/master/public/images/img4.PNG" data-canonical-src="https://github.com/Pro-Abhinav/Data-Visualization-Dashboard/blob/master/public/images/img4.PNG" width="900" height="400"" alt="Page 4" />
+</p>
+
+5. This page of the dashboard shows the information about the project, the data we are using in the project and information about the team members.
+<p align="center"> 
+<img src="https://github.com/Pro-Abhinav/Data-Visualization-Dashboard/blob/master/public/images/img5.PNG" data-canonical-src="https://github.com/Pro-Abhinav/Data-Visualization-Dashboard/blob/master/public/images/img5.PNG" width="900" height="400"" alt="Page 5" />
+</p>
+
 ## Contributors
 * Abhinav Tripathi 19BCE0548
 

@@ -321,8 +321,6 @@ The dataset used in this project is extremely detailed and contains a lot of inf
 
 #### Team:
 * Abhinav Tripathi 19BCE0548
-* Aditya Pagaria 19BCE0348
-
 
 </div>
 
